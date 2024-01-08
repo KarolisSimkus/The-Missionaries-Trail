@@ -74,9 +74,19 @@ isShoreState = False
 isFailState = False
 
 # Saved Positions
-posCannibalLand = (10, 400)
-posCannibal1Land = (40, 400)
-posCannibal2Land = (70, 400)
+posFCannibalLand = (10, 400)
+posFCannibal1Land = (40, 400)
+posFCannibal2Land = (70, 400)
+
+posFChickenLand = (100, 360)
+posFChicken1Land = (130, 360)
+posFChicken2Land = (160, 360)
+
+posFBoatChicken = (380,350)
+posFBoatChicken1 = (380,380)
+
+posFBoatCannibal = (380,350)
+posFBoatCannibal1 = (380,380)
 
 # Game loop
 while True:
@@ -87,7 +97,8 @@ while True:
         elif event.type == pygame.MOUSEBUTTONDOWN:
             print("M1 Pressed")
             if ButtonChicken_rect.collidepoint(pygame.mouse.get_pos()):
-                Chicken_rect.topleft = (380, 350)
+                Chicken_rect.topleft = posFBoatChicken
+                Chicken1_rect.topleft = posFBoatChicken1
                 print("Chicken Button Pressed")
             if ButtonCannibal_rect.collidepoint(pygame.mouse.get_pos()):
                 Cannibal_rect.topleft = (410, 350)
@@ -105,6 +116,13 @@ while True:
                     Boat_rect.topleft = (350,300)
             if Minus_rect.collidepoint(pygame.mouse.get_pos()):
                 print("Minus Chicken Button Pressed")
+                if isShoreState == False:
+                    if Chicken_rect.topleft == posFBoatChicken or Chicken_rect.topleft == posFBoatChicken1:
+                        Chicken_rect.topleft = posFChickenLand
+                    elif Chicken1_rect.topleft == posFBoatChicken or Chicken1_rect.topleft == posFBoatChicken1:
+                        Chicken1_rect.topleft = posFChicken1Land
+                    elif Chicken2_rect.topleft == posFBoatChicken or Chicken2_rect.topleft == posFBoatChicken1:
+                        Chicken2_rect.topleft = posFChicken2Land
             if Minus1_rect.collidepoint(pygame.mouse.get_pos()):
                 print("Minus Cannibal Button Pressed")
 
