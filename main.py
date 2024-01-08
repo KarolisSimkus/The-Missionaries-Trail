@@ -1,364 +1,135 @@
+import sys
 import pygame
-import spritesheet
 
+
+# Initialize Pygame
 pygame.init()
-pygame.display.init()
 
-SCREEN_HEIGHT = 600
-SCREEN_WIDTH = 800
-screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+# Set up display
+width, height = 800, 600
+screen = pygame.display.set_mode((width, height))
+pygame.display.set_caption("Game")
 
-BackgroundColor = (50, 50, 50)
-color = (0, 0, 0)
-color2 = (255, 255, 255)
+# Load Background sprite
+Background_image = pygame.image.load("Images/Background.png")
+Background_rect = Background_image.get_rect()
+Background_rect.topleft = (0,0)
 
-BackgroundImage = pygame.image.load('Images/Sprite-0010-export.png')
+# Load Buttons
+ButtonChicken_image = pygame.image.load("Images/ChickenButton.png")
+ButtonChicken_rect = ButtonChicken_image.get_rect()
+ButtonChicken_rect.topleft = (20,500)
+ButtonCannibal_image = pygame.image.load("Images/CannibalButton.png")
+ButtonCannibal_rect = ButtonCannibal_image.get_rect()
+ButtonCannibal_rect.topleft = (160,500)
+Minus_image = pygame.image.load("Images/Minus.png")
+Minus_rect = Minus_image.get_rect()
+Minus_rect.topleft = (103,500)
+Minus1_image = pygame.image.load("Images/Minus.png")
+Minus1_rect = Minus1_image.get_rect()
+Minus1_rect.topleft = (243,500)
+ButtonBoat_image = pygame.image.load("Images/BoatButton.png")
+ButtonBoat_image = pygame.transform.scale(ButtonBoat_image, (ButtonBoat_image.get_width()*0.3, ButtonBoat_image.get_height()*0.3))
+ButtonBoat_rect = ButtonBoat_image.get_rect()
+ButtonBoat_rect.topleft = (300,500)
 
-Chicken1 = pygame.image.load('Images/Chicken.png')
-Chicken1 = pygame.transform.scale_by(Chicken1, 0.5)
-Chicken2 = pygame.image.load('Images/Chicken.png')
-Chicken2 = pygame.transform.scale_by(Chicken2, 0.5)
-Chicken3 = pygame.image.load('Images/Chicken.png')
-Chicken3 = pygame.transform.scale_by(Chicken3, 0.5)
-Chicken4 = pygame.image.load('Images/Chicken.png')
-Chicken4 = pygame.transform.scale_by(Chicken4, 0.5)
+# Load Boat
+Boat_image = pygame.image.load("Images/Boat.png")
+Boat_image = pygame.transform.scale(Boat_image, (Boat_image.get_width()*0.4, Boat_image.get_height()*0.4))
+Boat_rect = Boat_image.get_rect()
+Boat_rect.topleft = (350,300)
 
-Cannibal1 = pygame.image.load('Images/Cannibal.png')
-Cannibal1 = pygame.transform.scale_by(Cannibal1, 0.5)
-Cannibal2 = pygame.image.load('Images/Cannibal.png')
-Cannibal2 = pygame.transform.scale_by(Cannibal2, 0.5)
-Cannibal3 = pygame.image.load('Images/Cannibal.png')
-Cannibal3 = pygame.transform.scale_by(Cannibal3, 0.5)
-Cannibal4 = pygame.image.load('Images/Cannibal.png')
-Cannibal4 = pygame.transform.scale_by(Cannibal4, 0.5)
+# Load Chickens
+Chicken_image = pygame.image.load("Images/Chicken.png")
+Chicken_image = pygame.transform.scale(Chicken_image, (Chicken_image.get_width()*0.5, Chicken_image.get_height()*0.5))
+Chicken_rect = Chicken_image.get_rect()
+Chicken_rect.topleft = (100,360)
+Chicken1_image = pygame.image.load("Images/Chicken.png")
+Chicken1_image = pygame.transform.scale(Chicken1_image, (Chicken1_image.get_width()*0.5, Chicken1_image.get_height()*0.5))
+Chicken1_rect = Chicken1_image.get_rect()
+Chicken1_rect.topleft = (130,360)
+Chicken2_image = pygame.image.load("Images/Chicken.png")
+Chicken2_image = pygame.transform.scale(Chicken2_image, (Chicken2_image.get_width()*0.5, Chicken2_image.get_height()*0.5))
+Chicken2_rect = Chicken2_image.get_rect()
+Chicken2_rect.topleft = (160,360)
 
-Boat1 = pygame.image.load('Images/Boat2.png')
-Boat1 = pygame.transform.scale_by(Boat1, 0.5)
+# Load Cannibals
+Cannibal_image = pygame.image.load("Images/Cannibal.png")
+Cannibal_image = pygame.transform.scale(Cannibal_image, (Cannibal_image.get_width()*0.5, Cannibal_image.get_height()*0.5))
+Cannibal_rect = Cannibal_image.get_rect()
+Cannibal_rect.topleft = (10, 400)
+Cannibal1_image = pygame.image.load("Images/Cannibal.png")
+Cannibal1_image = pygame.transform.scale(Cannibal1_image, (Cannibal1_image.get_width()*0.5, Cannibal1_image.get_height()*0.5))
+Cannibal1_rect = Cannibal1_image.get_rect()
+Cannibal1_rect.topleft = (40, 400)
+Cannibal2_image = pygame.image.load("Images/Cannibal.png")
+Cannibal2_image = pygame.transform.scale(Cannibal2_image, (Cannibal2_image.get_width()*0.5, Cannibal2_image.get_height()*0.5))
+Cannibal2_rect = Cannibal2_image.get_rect()
+Cannibal2_rect.topleft = (70, 400)
 
+# Bool States
+isBoatFull = False
+isBoatBoarded = False
+isShoreState = False
+isFailState = False
 
+# Saved Positions
+posCannibalLand = (10, 400)
+posCannibal1Land = (40, 400)
+posCannibal2Land = (70, 400)
 
-pygame.display.set_caption("The Missionaries Trail")
-
-
-
-
-
-
-BoatState = False # False means close shore, true means far shore
-BoatFull = False
-Boatcount = 0 # how many passengers are onboard
-
-#Positions for Near saved
-BoatFalseCannibal1PosBoat = (300, 300)
-BoatFalseCannibal1PosLand = (10, 400)
-BoatFalseCannibal2PosBoat = (300, 325)
-BoatFalseCannibal2PosLand = (30, 400)
-BoatFalseCannibal3PosBoat = (300, 350)
-BoatFalseCannibal3PosLand = (50, 400)
-
-BoatFalseChicken1PosBoat = (350, 300)
-BoatFalseChicken1PosLand = (160, 340)
-BoatFalseChicken2PosBoat = (350, 325)
-BoatFalseChicken2PosLand = (180, 340)
-BoatFalseChicken3PosBoat = (350, 350)
-BoatFalseChicken3PosLand = (200, 340)
-
-# To implement far positions
-#Positions for Far saved
-#BoatTrueCannibal1PosBoat = (x, y)
-#BoatTrueCannibal1PosLand = (x, y)
-#BoatTrueCannibal2PosBoat = (x, y)
-#BoatTrueCannibal2PosLand = (x, y)
-#BoatTrueCannibal3PosBoat = (x, y)
-#BoatTrueCannibal3PosLand = (x, y)
-
-#BoatTrueChicken1PosBoat = (x, y)
-#BoatTrueChicken1PosLand = (x, y)
-#BoatTrueChicken2PosBoat = (x, y)
-#BoatTrueChicken2PosLand = (x, y)
-#BoatTrueChicken3PosBoat = (x, y)
-#BoatTrueChicken3PosLand = (x, y)
-
-
-# b1  Near  /  b2  Far
-# False == Land  /  True == Boat
-b1_Cannibal1State = False
-b1_Cannibal2State = False
-b1_Cannibal3State = False
-b1_Chicken1State = False
-b1_Chicken2State = False
-b1_Chicken3State = False
-
-b2_Cannibal1State = False
-b2_Cannibal2State = False
-b2_Cannibal3State = False
-b2_Chicken1State = False
-b2_Chicken2State = False
-b2_Chicken3State = False
-
-# Make BackgroundColor (grey) on screen
-screen.fill(BackgroundColor)
-
-# Make BackgroundImage on screen
-screen.blit(BackgroundImage, (0, 0))
-
-# Boat
-screen.blit(Boat1, (250, 250))
-
-# Three Chickens
-screen.blit(Chicken1, (160, 340))
-screen.blit(Chicken2, (180, 340))
-screen.blit(Chicken3, (200, 340))
-
-# Three Cannibals
-screen.blit(Cannibal1, (10, 400))
-screen.blit(Cannibal2, (30, 400))
-screen.blit(Cannibal3, (50, 400))
-
-#Buttons
-
-button = False  # used to negate double clicking button
-font = pygame.font.Font('freesansbold.ttf', 32)
-
-# Button for Cannibal
-
-rect1 = pygame.Rect(0, 0, 80, 80)
-rect11 = pygame.Rect(0, 0, 82, 82)
-
-rect1.center = (80, 550)
-rect11.center = (80, 550)
-
-pygame.draw.rect(screen, color2, rect11)  # White outline
-pygame.draw.rect(screen, color, rect1)  # Black Box
-screen.blit(Cannibal4, (60, 516))  # Cannibal Image
-
-# Button for Chicken
-
-rect2 = pygame.Rect(0, 0, 80, 80)
-rect22 = pygame.Rect(0, 0, 82, 82)
-
-rect2.center = (200, 550)
-rect22.center = (200, 550)
-
-pygame.draw.rect(screen, color2, rect22)
-pygame.draw.rect(screen, color, rect2)
-screen.blit(Chicken4, (180, 516))
-
-# Button for Boat
-
-rect3 = pygame.Rect(0, 0, 160, 80)
-rect33 = pygame.Rect(0, 0, 162, 82)
-
-rect3.center = (500, 550)
-rect33.center = (500, 550)
-
-textBoat = font.render('Boat', True, color2)
-textRect = textBoat.get_rect()
-textRect.center = (500, 550)
-
-pygame.draw.rect(screen, color2, rect33)
-pygame.draw.rect(screen, color, rect3)
-screen.blit(textBoat, textRect)
-
-# Button for put back down
-
-
-
-
-
-
-
-
-
-
-
-clock = pygame.time.Clock()
-
-running = True
-
-
-
-if __name__ == "__main__":
-    while running:
-
-        # More than 2 on board the Boat
-        if Boatcount > 2:
+# Game loop
+while True:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
             pygame.quit()
-            quit()
+            sys.exit()
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            print("M1 Pressed")
+            if ButtonChicken_rect.collidepoint(pygame.mouse.get_pos()):
+                Chicken_rect.topleft = (380, 350)
+                print("Chicken Button Pressed")
+            if ButtonCannibal_rect.collidepoint(pygame.mouse.get_pos()):
+                Cannibal_rect.topleft = (410, 350)
+                print("Cannibal Button Pressed")
+            if ButtonBoat_rect.collidepoint(pygame.mouse.get_pos()):
+                print("Boat Button Pressed")
+                if isBoatBoarded == False and isShoreState == False:
+                    isShoreState = True
+                    Boat_image = pygame.transform.scale(Boat_image, (Boat_image.get_width()*0.4, Boat_image.get_height()*0.4))
+                    Boat_rect.topleft = (600, 320)
+                elif isBoatBoarded == False and isShoreState == True:
+                    isShoreState = False
+                    Boat_image = pygame.image.load("Images/Boat.png")
+                    Boat_image = pygame.transform.scale(Boat_image, (Boat_image.get_width()*0.4, Boat_image.get_height()*0.4))
+                    Boat_rect.topleft = (350,300)
+            if Minus_rect.collidepoint(pygame.mouse.get_pos()):
+                print("Minus Chicken Button Pressed")
+            if Minus1_rect.collidepoint(pygame.mouse.get_pos()):
+                print("Minus Cannibal Button Pressed")
 
-        if Boatcount == 2:
-            BoatState = True
+            #nothing
 
+    # Clear the screen
+    screen.fill((50, 50, 50))
 
+    # Draw the character
+    screen.blit(Background_image, Background_rect)
+    screen.blit(ButtonChicken_image, ButtonChicken_rect)
+    screen.blit(Minus_image, Minus_rect)
+    screen.blit(Minus1_image, Minus1_rect)
+    screen.blit(ButtonCannibal_image, ButtonCannibal_rect)
+    screen.blit(ButtonBoat_image, ButtonBoat_rect)
+    screen.blit(Boat_image, Boat_rect)
+    screen.blit(Chicken_image, Chicken_rect)
+    screen.blit(Chicken1_image, Chicken1_rect)
+    screen.blit(Chicken2_image, Chicken2_rect)
+    screen.blit(Cannibal_image, Cannibal_rect)
+    screen.blit(Cannibal1_image, Cannibal1_rect)
+    screen.blit(Cannibal2_image, Cannibal2_rect)
 
-        # event handler
-        for event in pygame.event.get():
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if event.button == 1:  # Left mouse button.
+    # Update the display
+    pygame.display.flip()
 
-                    if Boatcount == 2:
-                        BoatFull = True
-
-                    # Check if the rect collides with the mouse pos.
-                    if rect1.collidepoint(pygame.mouse.get_pos()):
-
-                        button = True  # so only once it is clicked
-                        print('Cannibal clicked.')
-
-                        # Check for boat state / Near or Far?
-
-                        # False for Near
-                        if BoatState == False and button == True:
-
-                            button = False
-
-                            # check if shore has cannibals
-                            if (b1_Cannibal1State == False or
-                                b1_Cannibal2State == False or
-                                b1_Cannibal3State == False):
-
-                                    # check if boat isnt full
-                                    if BoatFull == False:
-
-                                        # check which cannibal wants to get on the boat
-                                        # Cannibal 1
-                                        if b1_Cannibal1State == False:
-                                            print('Cannibal 1 on Boat From Near.')
-                                            b1_Cannibal1State = True
-                                            Boatcount += 1
-                                            screen.blit(Cannibal1, BoatFalseCannibal1PosBoat)
-                                        # Cannibal 2
-                                        elif b1_Cannibal2State == False:
-                                            print('Cannibal 2 on Boat From Near.')
-                                            b1_Cannibal2State = True
-                                            Boatcount += 1
-                                            screen.blit(Cannibal2, BoatFalseCannibal2PosBoat)
-                                        # Cannibal 3
-                                        elif b1_Cannibal3State == False:
-                                            print('Cannibal 3 on Boat From Near.')
-                                            b1_Cannibal3State = True
-                                            Boatcount += 1
-                                            screen.blit(Cannibal3, BoatFalseCannibal3PosBoat)
-
-                        # True for Far
-                        if BoatState == True and button == True:
-
-                            button = False
-
-                            # check if shore has cannibals
-                            if (b2_Cannibal1State == False or
-                                b2_Cannibal2State == False or
-                                b2_Cannibal3State == False):
-
-                                    # check if boat isnt full
-                                    if BoatFull == False:
-
-                                        # check which cannibal wants to get on the boat
-                                        # Cannibal 1
-                                        if b2_Cannibal1State == False:
-                                            print('Cannibal 1 on Boat From Far.')
-                                            b1_Cannibal1State = True
-                                            Boatcount += 1
-                                            # screen.blit(Cannibal1, BoatFalseCannibal1PosBoat)
-                                        # Cannibal 2
-                                        elif b2_Cannibal2State == False:
-                                            print('Cannibal 2 on Boat From Fa.')
-                                            b1_Cannibal2State = True
-                                            Boatcount += 1
-                                            # screen.blit(Cannibal2, BoatFalseCannibal2PosBoat)
-                                        # Cannibal 3
-                                        elif b2_Cannibal3State == False:
-                                            print('Cannibal 3 on Boat From Fa.')
-                                            b1_Cannibal3State = True
-                                            Boatcount += 1
-                                            # screen.blit(Cannibal3, BoatFalseCannibal3PosBoat)
-                        # Change button
-                        button = False
-
-                    if rect2.collidepoint(pygame.mouse.get_pos()):
-
-                        print('Chicken clicked.')
-                        button = True  # so only once it is clicked
-
-                        # Check for boat state / Near or Far?
-
-                        # False for Near
-                        if BoatState == False and button == True:
-
-                            button = False
-
-                            # check if shore has Chickens
-                            if (b1_Chicken1State == False or
-                                b1_Chicken2State == False or
-                                b1_Chicken3State == False):
-
-                                    # check if boat isnt full
-                                    if BoatFull == False:
-
-                                        # check which Chicken wants to get on the boat
-                                        # Chicken 1
-                                        if b1_Chicken1State == False:
-                                            print('Chicken 1 on Boat From Near.')
-                                            b1_Chicken1State = True
-                                            Boatcount += 1
-                                            screen.blit(Chicken1, BoatFalseChicken1PosBoat)
-                                        # Chicken 2
-                                        elif b1_Chicken2State == False:
-                                            print('Chicken 2 on Boat From Near.')
-                                            b1_Chicken2State = True
-                                            Boatcount += 1
-                                            screen.blit(Chicken2, BoatFalseChicken2PosBoat)
-                                        # Chicken 3
-                                        elif b1_Chicken3State == False:
-                                            print('Chicken 3 on Boat From Near.')
-                                            b1_Chicken3State = True
-                                            Boatcount += 1
-                                            screen.blit(Chicken3, BoatFalseChicken3PosBoat)
-
-                        # True for Far
-                        if BoatState == True and button == True:
-
-                            button = False
-
-                            # check if shore has cannibals
-                            if (b2_Chicken1State == False or
-                                b2_Chicken2State == False or
-                                b2_Chicken3State == False):
-
-                                    # check if boat isnt full
-                                    if BoatFull == False:
-
-                                        # check which Chicken wants to get on the boat
-                                        # Chicken 1
-                                        if b2_Chicken1State == False:
-                                            print('Chicken 1 on Boat From Far.')
-                                            b1_Chicken1State = True
-                                            Boatcount += 1
-                                            # screen.blit(Chicken1, BoatFalseChicken1PosBoat)
-                                        # Chicken 2
-                                        elif b2_Chicken2State == False:
-                                            print('Chicken 2 on Boat From Fa.')
-                                            b1_Chicken2State = True
-                                            Boatcount += 1
-                                            # screen.blit(Chicken2, BoatFalseCannibal2PosBoat)
-                                        # Chicken 3
-                                        elif b2_Chicken3State == False:
-                                            print('Chicken 3 on Boat From Fa.')
-                                            b1_Chicken3State = True
-                                            # screen.blit(Chicken3, BoatFalseCannibal3PosBoat)
-                                            Boatcount += 1
-
-
-                    if rect3.collidepoint(pygame.mouse.get_pos()): # Boat
-                        print('Boat clicked.')
-                    # need remove button for both
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE:
-                    game_paused = True
-            if event.type == pygame.QUIT:
-                run = False
-
-        pygame.display.update()
-
-pygame.quit()
-quit()
+    # Control the frame rate
+    pygame.time.Clock().tick(30)
