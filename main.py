@@ -19,26 +19,26 @@ Background_rect.topleft = (0,0)
 # Load Buttons
 ButtonChicken_image = pygame.image.load("Images/ChickenButton.png")
 ButtonChicken_rect = ButtonChicken_image.get_rect()
-ButtonChicken_rect.topleft = (20,500)
+ButtonChicken_rect.topleft = (20,490)
 ButtonCannibal_image = pygame.image.load("Images/CannibalButton.png")
 ButtonCannibal_rect = ButtonCannibal_image.get_rect()
-ButtonCannibal_rect.topleft = (160,500)
+ButtonCannibal_rect.topleft = (160,490)
 Minus_image = pygame.image.load("Images/Minus.png")
 Minus_rect = Minus_image.get_rect()
-Minus_rect.topleft = (103,500)
+Minus_rect.topleft = (103,490)
 Minus1_image = pygame.image.load("Images/Minus.png")
 Minus1_rect = Minus1_image.get_rect()
-Minus1_rect.topleft = (243,500)
+Minus1_rect.topleft = (243,490)
 Minus2_image = pygame.image.load("Images/Minus.png")
 Minus2_rect = Minus1_image.get_rect()
-Minus2_rect.topleft = (700,500)
+Minus2_rect.topleft = (700,490)
 Quit_image = pygame.image.load("Images/Button.png")
 Quit_rect = Quit_image.get_rect()
-Quit_rect.topleft = (550,545)
+Quit_rect.topleft = (600,545)
 ButtonBoat_image = pygame.image.load("Images/BoatButton.png")
 ButtonBoat_image = pygame.transform.scale(ButtonBoat_image, (ButtonBoat_image.get_width()*0.3, ButtonBoat_image.get_height()*0.3))
 ButtonBoat_rect = ButtonBoat_image.get_rect()
-ButtonBoat_rect.topleft = (300,500)
+ButtonBoat_rect.topleft = (300,490)
 
 # Load Boat
 Boat_image = pygame.image.load("Images/Boat.png")
@@ -101,6 +101,9 @@ playlist.pop(0)
 pygame.mixer.music.play()
 
 font = pygame.font.Font(None, 36)
+fonty = pygame.font.Font(None, 40)
+fontUnderline= fonty
+fontUnderline.set_underline(True)
 
 
 
@@ -108,7 +111,17 @@ font = pygame.font.Font(None, 36)
 def start():
 
     Some_text = font.render(f" Press Anywhere to start ", True, (255,255,255))
+    Explain_text = fontUnderline.render(f"Three chickens and three cannibals must cross a river ", True, (255,0,0))
+    Explain_text1 = fontUnderline.render(f"Using a boat which can carry at most two people", True, (255,0,0))
+    Explain_text2 = fontUnderline.render(f"For both banks, if there are chickens present", True, (255,0,0))
+    Explain_text3 = fontUnderline.render(f"They cannot be outnumbered by cannibals", True, (255,0,0))
+    Explain_text4 = fontUnderline.render(f"The boat cannot cross the river with no people on board. ", True, (255,0,0))
     screen.blit(Some_text, (250, 300))
+    screen.blit(Explain_text, (0, 0))
+    screen.blit(Explain_text1, (0, 50))
+    screen.blit(Explain_text2, (0, 100))
+    screen.blit(Explain_text3, (0, 150))
+    screen.blit(Explain_text4, (0, 200))
     pygame.display.update()
 
     while True:
@@ -711,7 +724,7 @@ def main_loop(Boat_image,Background_image,ButtonChicken_image,Minus_image,Minus1
         score_text = font.render(f"Turns: {TurnCounter}", True, (255,255,255))
         screen.blit(score_text, (500, 500))
         Quit_text = font.render(f" Quit ", True, (255,255,255))
-        screen.blit(Quit_text, (565, 560))
+        screen.blit(Quit_text, (616, 558))
 
         if BoatCounter == 2:
             isBoatFull = True
